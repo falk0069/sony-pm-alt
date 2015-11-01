@@ -12,8 +12,8 @@ The way Sony transfers pictures is via PTP/IP (Picture Transfer Protocol over In
 TRANSFER SOFTWARE: GPHOTO2:
 -----------------------------------------------------------------
 The sony-pm-alt.py pytho script is really only the UPNP listener.  The real magic comes from the open source gphoto software: http://www.gphoto.com/.  Basically once the PTP/IP mode is enabled ('Send to Computer' option selected), you can run a command like this to download all the pictures/videos: <br>
-gphoto2 -P --port ptpip:192.168.1.222 --skip-existing   #assuming your camera's IP is 192.168.1.222
-This was tested with version 2.5.8.1 using a Sony Alpha ILCE-5000  (version 2.5.8 had an issue for me)
+gphoto2 -P --port ptpip:192.168.1.222 --skip-existing   #assuming your camera's IP is 192.168.1.222 <br>
+This was tested with version 2.5.8.1 using a Sony Alpha ILCE-5000  (version 2.5.8 had an issue for me) <br>
 
 MAIN CHALLENGE:
 -----------------------------------------------------------------
