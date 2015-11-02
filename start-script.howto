@@ -1,0 +1,49 @@
+#!/bin/sh
+#
+# This is a very basic start script for Linux.  You will want to set up a log rotation if the
+# log gets too big.  Also if you restart, the log will get overwritten.  Another thing you
+# may want to do is edit the python script and change DEBUG to INFO or ERROR to reduce the
+# logging.
+#
+# To use this, update the SONYUPNPDIR path below to the location that you placed code.
+# Then copy it to your /etc/init.d dir, set permissions, and link to rc dirs
+# e.g.
+# sudo cp start-script.howto /etc/init.d/sony-pm-alt
+# sudo chmod 755 /etc/init.d/sony-pm-alt
+# sudo update-rc.d sony-pm-alt defaults    #ubuntu command
+#
+# or if you prefer services:
+# sudo insserv sony-pm-alt
+# sudo /usr/lib/insserv/insserv sony-pm-alt  #run this instead if command not found
+#
+# To start manually:
+# sudo /etc/init.d/sony-pm-alt start
+# or
+# sudo service sony-pm-alt start
+#
+# Log file: /var/log/sony-pm-alt.log
+#
+
+SONYUPNPDIR=/usr/share/sony-pm-alt
+
+# Some things that run always
+touch /var/lock/sony-pm-alt
+
+# Carry out specific functions when asked to by the system
+case "$1" in
+  start)
+    echo "Starting sony-pm-alt"
+    cd  $SONYUPNPDIR
+    python sony-pm-alt.py > /var/log/sony-pm-alt.log 2>&1 &
+    ;;
+  stop)
+    echo "Stopping sony-pm-alt"
+    /usr/bin/pkill -f "sony-pm-alt.py"
+    ;;
+  *)
+    echo "Usage: /etc/init.d/sony-pm-alt {start|stop}"
+    exit 1
+    ;;
+esac
+
+exit 0
