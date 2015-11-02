@@ -13,7 +13,7 @@ BCAST_IP = "239.255.255.250"
 UPNP_PORT = 1900
 GPHOTO_CMD_ARGS = [os.path.expanduser("~/gphoto2-2.5.8/gphoto2/gphoto2"),"-P","--skip-existing"]
 GPHOTO_SETTINGS = "~/.gphoto/settings"
-PHOTO_DIR = "/var/lib/eyefi/Sony"
+PHOTO_DIR = "/var/lib/Sony"
 CUSTOM_LD_LIBRARY_PATH = "/usr/local/lib"
 PTP_GUID = "00:00:00:00:00:00:00:00:ff:ff:08:00:27:f5:16:4f"
 
