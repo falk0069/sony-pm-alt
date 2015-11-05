@@ -26,10 +26,11 @@ HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Enum\USB\VID_14CD&PID_6D00\5&c1e6cce
 ContainerID = {a4d7a2f7-c5ae-11e4-93ac-080027f5164f}
 
 Otherwise the for-sure method is to run tcpdump/wireshark and watch for the first ptp packet (port 15740).  You will see something like this: <br>
-00000000  2c 00 00 00 01 00 00 00  00 00 00 00 00 00 00 00 ,....... ........ <br>
-00000010  ff ff 08 00 27 f5 16 4f  57 00 49 00 4e 00 37 00 ....'..O W.I.N.7. <br>
-00000020  2d 00 56 00 4d 00 00 00  00 00 01 00             -.V.M... .... <br>
-
+```
+00000000  2c 00 00 00 01 00 00 00  00 00 00 00 00 00 00 00 ,....... ........
+00000010  ff ff 08 00 27 f5 16 4f  57 00 49 00 4e 00 37 00 ....'..O W.I.N.7.
+00000020  2d 00 56 00 4d 00 00 00  00 00 01 00             -.V.M... ....
+```
 Where bytes 9 - 24 are the GUID: 0000000000000000ffff080027f5164f <br>
 
 Wireshark will nicely display this in the info window like so: <br>
@@ -38,26 +39,28 @@ Init Command Request GUID: 0000000000000000ffff080027f5164f Name: WIN7-VM <br>
 GETTING GPHOTO2:
 -------------------------------------------------------------------
 To test things out quickly (without the addtional packet injection hack to get the Sony to gracefully transfer files) you probably will want to just grab the latest gphoto2/libgphoto2.  If you are using a Debian/Ubuntu based Linux distro run this: <br>
-sudo apt-get install gphoto2.  Then to quickly test that your camera will work:<br>
-1. Disable playmemories (disable network, block port 15740, turn PC, etc) <br>
-2. Turn Camera's 'Send to Computer' option on <br>
-3. Run: gphoto2 --port ptpip:192.168.1.222 --summary  #Update IP accordingly <br>
-Note: First time will probably fail since the GUID will be wrong <br>
-4. Update the ~/.gphoto/settings that should now exist and replace with correct GUID <br>
+```sudo apt-get install gphoto2```  Then to quickly test that your camera will work:<br>
+```
+1. Disable playmemories (disable network, block port 15740, turn PC, etc)
+2. Turn Camera's 'Send to Computer' option on
+3. Run: gphoto2 --port ptpip:192.168.1.222 --summary  #Update IP accordingly
+Note: First time will probably fail since the GUID will be wrong
+4. Update the ~/.gphoto/settings that should now exist and replace with correct GUID
 5. Run the gphoto command again <br>
+```
 
 DOWNLOAD SOURCE FOR LIBGPHOTO2 and GPHOTO2:
 -------------------------------------------------------------------
 Here are four methods for downloading libghoto2:
 1) The developers of gphoto kindly provided a temporary snapshot of version 2.5.8.1.  This is the exact version I was working with.  I'm not sure how long it will be available but here is the link: <br>
   http://www.lst.de/~mm/libgphoto2-2.5.8.1.tar.bz2 <br>
-  (Note to unzip: tar -xvf libgphoto2-2.5.8.1.tar.bz2) <br>
+  (Note to unzip: ```tar -xvf libgphoto2-2.5.8.1.tar.bz2```) <br>
   <br>
 2) Otherwise the bleeding edge version is located on github: https://github.com/gphoto/libgphoto2/archive/master.zip <br>
   <br>
 3) Or you can do a git clone: <br>
-  git clone https://github.com/gphoto/libgphoto2.git <br>
-  (Note you need git installed.  E.g. sudo apt-get install git) <br>
+  ```git clone https://github.com/gphoto/libgphoto2.git``` <br>
+  (Note you need git installed.  E.g. ```sudo apt-get install git```) <br>
   <br>
 4) Or assuming a version >2.5.8 is out you could grab a stable version at sourceforce: <br>    
   http://sourceforge.net/projects/gphoto/files/libgphoto/ <br>
@@ -68,7 +71,7 @@ To download ghoto2: <br>
 2) Bleeding edge at github: <br>
   https://github.com/gphoto/gphoto2/archive/master.zip <br>
 3) Git clone: <br>
-  git clone https://github.com/gphoto/gphoto2.git <br>
+  ```git clone https://github.com/gphoto/gphoto2.git``` <br>
 
 
 COMPILING LIBGPHOTO2 and GPHOTO2:
@@ -83,25 +86,32 @@ automake <br>
 libtool <br>
  <br>
 For example on Debian/Ubuntu run: <br>
-sudo apt-get install pkg-config m4 gettext autopoint autoconf automake libtool <br>
+```
+sudo apt-get install pkg-config m4 gettext autopoint autoconf automake libtool
+```
  <br>
 Next make sure the source is unzipped for both and then run these commands in each of the source directories: <br>
--#this with validate the 'configure' script is ready <br>
- autoreconf --install --symlink -f  <br>
--#use a custom prefix so we don't affect other versions installed <br>
- ./configure --prefix=/usr/local   <br>
--#does the compiling <br>
- make            <br>
--#deploy the code <br>
- sudo make install      <br>                
- <br>
-To run then update your LD_LIBRARY_PATH and kick off the command: <br>
-export LD_LIBRARY_PATH=/usr/local/lib <br>
-/usr/local/bin/gphoto2 --version <br>
+```
+-#this with validate the 'configure' script is ready
+ autoreconf --install --symlink -f
+-#use a custom prefix so we don't affect other versions installed
+ ./configure --prefix=/usr/local
+-#does the compiling
+ make            
+-#deploy the code
+ sudo make install                     
 
+To run then update your LD_LIBRARY_PATH and kick off the command:
+export LD_LIBRARY_PATH=/usr/local/lib
+/usr/local/bin/gphoto2 --version
+```
 COMPILING IN THE CUSTOMIZATION TO LIBGPHOTO2:
 --------------------------------------------------------------------
 Replace this file:  libgphoto2/camlibs/ptp2/ptpip.c with the one on this site <br>
-Rerun the "make" and "sudo make install" <br>
+Rerun :
+```
+make
+sudo make install
+```
 TEST! <br>
 
