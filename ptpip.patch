@@ -1,0 +1,270 @@
+--- orig/ptpip.c        2015-11-05 14:51:16.479063001 -0600
++++ new/ptpip.c 2015-11-05 14:51:04.319551488 -0600
+@@ -99,6 +99,63 @@
+ static uint16_t ptp_ptpip_check_event (PTPParams* params);
+ static uint16_t ptp_ptpip_event (PTPParams* params, PTPContainer* event, int wait);
+
++/*Used to make sure only one transfer happens*/
++static int iSonyTransfer = 0;
++
++/*Quick function to convert a string of hex to a byte array*/
++int hextobytes( const char *, unsigned char *);
++int hextobytes( const char * inHex, unsigned char * out){
++  const char *pos = inHex;
++  size_t count = 0;
++  for(count = 0; count < strlen(inHex) * 2 * sizeof(char); count++){
++    sscanf(pos, "%2hhx", &out[count]);
++    pos += 2 * sizeof(char);
++  }
++  return 0;
++}
++
++/*Used to read incoming packets and just dump them*/
++int ptp_ptpip_discard_read(PTPParams *);
++int ptp_ptpip_discard_read(PTPParams *params) {
++  int fd = params->cmdfd;
++  unsigned char tmp[1500];
++  int curread, len, ret;
++  PTPIPHeader hdrFull;
++
++  unsigned char *xhdr;
++
++  xhdr = (unsigned char*)(&hdrFull); curread = 0; len = sizeof (PTPIPHeader);
++
++  while (curread < len) {
++          ret = read (fd, xhdr + curread, len - curread);
++          if (ret == -1) {
++                  perror ("read PTPIPHeader");
++                  return PTP_RC_GeneralError;
++          }
++          curread += ret;
++          /*GP_LOG_D ("ptp_ptpip_discard_read_header - Got %d of %d bytes" ,curread, len);*/
++          GP_LOG_DATA ((char*)xhdr+curread, ret, "ptp_ptpip_discard_read_header:");
++          if (ret == 0) {
++                  GP_LOG_E ("End of stream after reading %d bytes of ptpipheader", ret);
++                  return PTP_RC_GeneralError;
++          }
++  }
++
++  len = dtoh32 (hdrFull.length) - sizeof (PTPIPHeader);
++  curread = 0;
++
++  GP_LOG_D ("ptp_ptpip_discard_read - Remaining data to read: %d",len);
++
++  while(curread < len){
++          ret = read (fd, &tmp, len-curread > sizeof(tmp) ? sizeof(tmp) : len-curread);
++          curread += ret;
++          GP_LOG_D ("ptp_ptpip_discard_read got %d of %d bytes", curread, len);
++          GP_LOG_DATA ((char*)&tmp, ret, "ptp_ptpip_discard_read:");
++  }
++return len;
++}
++
++
+ /* send / receive functions */
+ uint16_t
+ ptp_ptpip_sendreq (PTPParams* params, PTPContainer* req, int dataphase)
+@@ -107,6 +164,188 @@
+        int             len = 18+req->Nparam*4;
+        unsigned char   *request = malloc(len);
+
++       /*Added to hold Sony injection packets*/
++       unsigned char   *sonyrequest = malloc(500);
++        /*unsigned char   *xdata = NULL;*/
++        /*PTPIPHeader     hdr;*/
++
++
++        /* Send packets to Sony cameras to put them in transferring mode*/
++       if( req->Code == PTP_OC_GetStorageIDs && iSonyTransfer == 0){
++          GP_LOG_D ("oprequest code is %d - length is %d", req->Code, len);
++         iSonyTransfer = 1;
++         /*Packet Type: Operation Request Packet (0x00000006) Tran 01: GetDeviceInfo'*/
++         hextobytes("120000000600000000000000011001000000",sonyrequest);
++          GP_LOG_DATA ( (char*)sonyrequest, 18, "Sony tran - GetDeviceInfo:");
++          ret = write (params->cmdfd, sonyrequest, 18);
++          ptp_ptpip_discard_read(params); /*8 + 12 bytes*/
++          ptp_ptpip_discard_read(params); /*8 + 247 bytes*/
++          ptp_ptpip_discard_read(params); /*8 + 4 bytes*/
++          ptp_ptpip_discard_read(params); /*8 + 6 bytes*/
++
++         /*Operation Request Packet Tran 02: Operation Code: SetDevicePropValue (0x1016)*/
++          hextobytes("16000000060000000000000016100200000006d40000",sonyrequest);
++          GP_LOG_DATA ( (char*)sonyrequest, 22, "Sony tran - SetDevicePropValue:");
++          ret = write (params->cmdfd, sonyrequest, 22);
++
++         /*Operation Request Packet Tran 12: Operation Code: MTP_GetObjectPropDesc (0x9802)*/
++          hextobytes("1a000000060000000000000002980c00000086dc000001b30000",sonyrequest);
++          GP_LOG_DATA ( (char*)sonyrequest, 26, "Sony tran - MTP_GetObjectPropDesc:");
++          ret = write (params->cmdfd, sonyrequest, 26);
++          ptp_ptpip_discard_read(params); /*8 + 6 bytes*/
++
++         /*Operation Request Packet Tran 17: Operation Code: Unknown (0x9280)*/
++          hextobytes("16000000060000000000000080921100000001000000",sonyrequest);
++          GP_LOG_DATA ( (char*)sonyrequest, 22, "Sony tran - OpReq-0x9280:");
++          ret = write (params->cmdfd, sonyrequest, 22);
++
++         /*Operation Request Packet Tran 18: Operation Code: Unknown (0x9281)*/
++          hextobytes("16000000060000000000000081921200000001000000",sonyrequest);
++          GP_LOG_DATA ( (char*)sonyrequest, 22, "Sony tran - OpReq-0x9281:");
++          ret = write (params->cmdfd, sonyrequest, 22);
++          ptp_ptpip_discard_read(params); /*8 + 6 bytes*/
++
++         /*Operation Request Packet Tran 19: Operation Code: Unknown (0x9280)*/
++          hextobytes("16000000060000000000000080921300000001000000",sonyrequest);
++          GP_LOG_DATA ( (char*)sonyrequest, 22, "Sony tran - OpReq-0x9280:");
++          ret = write (params->cmdfd, sonyrequest, 22);
++
++         /*Operation Request Packet Tran 20: Operation Code: Unknown (0x9281)*/
++          hextobytes("16000000060000000000000081921400000001000000",sonyrequest);
++          GP_LOG_DATA ( (char*)sonyrequest, 22, "Sony tran - OpReq-0x9281:");
++          ret = write (params->cmdfd, sonyrequest, 22);
++          ptp_ptpip_discard_read(params); /*8 + 6 bytes*/
++
++         /*Operation Request Packet Tran 21: Operation Code: Unknown (0x9280)*/
++          hextobytes("16000000060000000000000080921500000004000000",sonyrequest);
++          GP_LOG_DATA ( (char*)sonyrequest, 22, "Sony tran - OpReq-0x9280:");
++          ret = write (params->cmdfd, sonyrequest, 22);
++
++          /*Start Data Packet        Tran 21:*/
++          hextobytes("1400000009000000150000001000000000000000",sonyrequest);
++          GP_LOG_DATA ( (char*)sonyrequest, 20, "Sony tran - Start Data Packet:");
++          ret = write (params->cmdfd, sonyrequest, 20);
++
++         /*Data Packet              Tran 21:*/
++          hextobytes("1c0000000a00000015000000",sonyrequest);
++          GP_LOG_DATA ( (char*)sonyrequest, 12, "Sony tran - Data Packet:");
++          ret = write (params->cmdfd, sonyrequest, 12);
++
++         /*Init Command Request Packet (0x00000001) Tran unresembled'*/
++          hextobytes("00000000010000000000000000000000",sonyrequest);
++          GP_LOG_DATA ( (char*)sonyrequest, 16, "Sony tran - Init Cmd Req:");
++          ret = write (params->cmdfd, sonyrequest, 16);
++
++         /*End Data Packet          Tran 21:*/
++          hextobytes("0c0000000c00000015000000",sonyrequest);
++          GP_LOG_DATA ( (char*)sonyrequest, 12, "Sony tran - End Data Packet:");
++          ret = write (params->cmdfd, sonyrequest, 12);
++          ptp_ptpip_discard_read(params); /*8 + 6 bytes*/
++
++         /*Operation Request Packet Tran 22: Operation Code: Unknown (0x9281)*/
++          hextobytes("16000000060000000000000081921600000004000000",sonyrequest);
++          GP_LOG_DATA ( (char*)sonyrequest, 22, "Sony tran - OpReq-0x9281:");
++          ret = write (params->cmdfd, sonyrequest, 22);
++          ptp_ptpip_discard_read(params); /*8 + 12 bytes*/
++          ptp_ptpip_discard_read(params); /*8 + 8196 bytes*/
++          ptp_ptpip_discard_read(params); /*8 + 4 bytes*/
++
++         /*Operation Request Packet Tran 23: Operation Code: Unknown (0x9280)*/
++          hextobytes("16000000060000000000000080921700000005000000",sonyrequest);
++          GP_LOG_DATA ( (char*)sonyrequest, 22, "Sony tran - OpReq-0x9280:");
++          ret = write (params->cmdfd, sonyrequest, 22);
++          ptp_ptpip_discard_read(params); /*8 + 6 bytes*/
++
++         /*Start Data Packet        Tran 34:*/
++          hextobytes("1400000009000000220000001000000000000000",sonyrequest);
++          GP_LOG_DATA ( (char*)sonyrequest, 20, "Sony tran - Start Data Packet:");
++          ret = write (params->cmdfd, sonyrequest, 20);
++
++         /*Data Packet (0x0000000a) Tran 34:*/
++          hextobytes("1c0000000a00000022000000",sonyrequest);
++          GP_LOG_DATA ( (char*)sonyrequest, 12, "Sony tran - Data Packet:");
++          ret = write (params->cmdfd, sonyrequest, 12);
++
++         /*Init Command Request Packet Tran 34:*/
++          hextobytes("00000000010000000000000000000000",sonyrequest);
++          GP_LOG_DATA ( (char*)sonyrequest, 16, "Sony tran - Init Cmd Req:");
++          ret = write (params->cmdfd, sonyrequest, 16);
++
++         /*End Data Packet          Tran 34:*/
++          hextobytes("0c0000000c00000022000000",sonyrequest);
++          GP_LOG_DATA ( (char*)sonyrequest, 12, "Sony tran - End Data Packet:");
++          ret = write (params->cmdfd, sonyrequest, 12);
++          ptp_ptpip_discard_read(params); /*8 + 6 bytes*/
++
++         /*Operation Request Packet Tran 35: Operation Code: Unknown (0x9280)*/
++          hextobytes("16000000060000000000000080922300000004000000",sonyrequest);
++          GP_LOG_DATA ( (char*)sonyrequest, 22, "Sony tran - OpReq-0x9280:");
++          ret = write (params->cmdfd, sonyrequest, 22);
++
++         /*Start Data Packet        Tran 35*/
++          hextobytes("1400000009000000230000001200000000000000",sonyrequest);
++          GP_LOG_DATA ( (char*)sonyrequest, 20, "Sony tran - Start Data Packet:");
++          ret = write (params->cmdfd, sonyrequest, 20);
++
++         /*Data Packet (0x0000000a)  Tran 35:*/
++          hextobytes("1e0000000a00000023000000",sonyrequest);
++          GP_LOG_DATA ( (char*)sonyrequest, 12, "Sony tran - Data Packet:");
++          ret = write (params->cmdfd, sonyrequest, 12);
++
++         /*Init Command ACK Packet (0x00000002)  Tran unknown*/
++          hextobytes("020000000200000000000000000000000101",sonyrequest);
++          GP_LOG_DATA ( (char*)sonyrequest, 18, "Sony tran - Init Cmd Ack:");
++          ret = write (params->cmdfd, sonyrequest, 18);
++
++         /*End Data Packet           Tran 35:*/
++          hextobytes("0c0000000c00000023000000",sonyrequest);
++          GP_LOG_DATA ( (char*)sonyrequest, 12, "Sony tran - End Data Packet:");
++          ret = write (params->cmdfd, sonyrequest, 12);
++          ptp_ptpip_discard_read(params); /*8 + 6 bytes*/
++        }
++
++
++        /* Injecting point for closing Sony transfers*/
++       else if( req->Code == PTP_OC_CloseSession && iSonyTransfer == 1){
++          GP_LOG_D ("oprequest code is %d", req->Code);
++         iSonyTransfer = 3;
++         /*Operation Request Packet Tran 710 Operation Code: Unknown (0x9281)*/
++          hextobytes("1600000006000000000000008192c602000004000000",sonyrequest);
++          GP_LOG_DATA ( (char*)sonyrequest, 22, "Sony closing - OpReq-0x9281:");
++          ret = write (params->cmdfd, sonyrequest, 22);
++          ptp_ptpip_discard_read(params); /* 8 + 12 bytes*/
++          ptp_ptpip_discard_read(params); /* 8 + 4 bytes*/
++          ptp_ptpip_discard_read(params); /* 8 + 4 bytes*/
++
++         /*Operation Request Packet Tran 711 Operation Code: Unknown (0x9280)*/
++          hextobytes("1600000006000000000000008092c702000004000000",sonyrequest);
++          GP_LOG_DATA ( (char*)sonyrequest, 22, "Sony closing - OpReq-0x9280:");
++          ret = write (params->cmdfd, sonyrequest, 22);
++          ptp_ptpip_discard_read(params); /* 8 + 6 bytes*/
++
++         /*Start Data Packet        Tran 711*/
++          hextobytes("1400000009000000c70200001000000000000000",sonyrequest);
++          GP_LOG_DATA ( (char*)sonyrequest, 20, "Sony closing - Start Data Packet:");
++          ret = write (params->cmdfd, sonyrequest, 20);
++
++         /*Data Packet              Tran 711*/
++          hextobytes("1c0000000a000000c7020000",sonyrequest);
++          GP_LOG_DATA ( (char*)sonyrequest, 12, "Sony closing - Data Packet:");
++          ret = write (params->cmdfd, sonyrequest, 12);
++
++         /*Init Fail Packet (0x00000005) Picture Transfer Protocol*/
++          hextobytes("00000000050000000000000000000000",sonyrequest);
++          GP_LOG_DATA ( (char*)sonyrequest, 16, "Sony closing - Init Fail Packet:");
++          ret = write (params->cmdfd, sonyrequest, 16);
++
++         /* End Data Packet         Tran 711*/
++          hextobytes("0c0000000c000000c7020000",sonyrequest);
++          GP_LOG_DATA ( (char*)sonyrequest, 12, "Sony closing - End Data Packet:");
++          ret = write (params->cmdfd, sonyrequest, 12);
++          ptp_ptpip_discard_read(params); /*8 + 6 bytes*/
++       }
++
++
+        ptp_ptpip_check_event (params);
+
+        htod32a(&request[ptpip_type],PTPIP_CMD_REQUEST);
+@@ -132,12 +371,15 @@
+        GP_LOG_DATA ( (char*)request, len, "ptpip/oprequest data:");
+        ret = write (params->cmdfd, request, len);
+        free (request);
++       free (sonyrequest); /*free the Sony one too*/
+        if (ret == -1)
+                perror ("sendreq/write to cmdfd");
+        if (ret != len) {
+                GP_LOG_E ("ptp_ptpip_sendreq() len =%d but ret=%d", len, ret);
+                return PTP_RC_OK;
+        }
++
++
+        return PTP_RC_OK;
+ }
