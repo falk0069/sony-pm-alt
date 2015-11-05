@@ -51,7 +51,7 @@ Note: First time will probably fail since the GUID will be wrong
 
 DOWNLOAD SOURCE FOR LIBGPHOTO2 and GPHOTO2:
 -------------------------------------------------------------------
-Here are four methods for downloading libghoto2:
+###Here are four methods for downloading libghoto2: <br>
 1) The developers of gphoto kindly provided a temporary snapshot of version 2.5.8.1.  This is the exact version I was working with.  I'm not sure how long it will be available but here is the link: <br>
   http://www.lst.de/~mm/libgphoto2-2.5.8.1.tar.bz2 <br>
   (Note to unzip: ```tar -xvf libgphoto2-2.5.8.1.tar.bz2```) <br>
@@ -65,7 +65,7 @@ Here are four methods for downloading libghoto2:
 4) Or assuming a version >2.5.8 is out you could grab a stable version at sourceforce: <br>    
   http://sourceforge.net/projects/gphoto/files/libgphoto/ <br>
 
-To download ghoto2: <br>
+###To download ghoto2: <br>
 1) Stable version at sourceforce: <br> 
   http://sourceforge.net/projects/gphoto/files/gphoto/ <br>
 2) Bleeding edge at github: <br>
