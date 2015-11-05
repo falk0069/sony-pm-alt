@@ -46,5 +46,62 @@ Note: First time will probably fail since the GUID will be wrong <br>
 4. Update the ~/.gphoto/settings that should now exist and replace with correct GUID <br>
 5. Run the gphoto command again <br>
 
-COMPILING CUSTOM GPHOTO:
+DOWNLOAD SOURCE FOR LIBGPHOTO2 and GPHOTO2:
+-------------------------------------------------------------------
+Here are four methods for downloading libghoto2:
+1) The developers of gphoto kindly provided a temporary snapshot of version 2.5.8.1.  This is the exact version I was working with.  I'm not sure how long it will be available but here is the link: <br>
+  http://www.lst.de/~mm/libgphoto2-2.5.8.1.tar.bz2 <br>
+  (Note to unzip: tar -xvf libgphoto2-2.5.8.1.tar.bz2) <br>
+  <br>
+2) Otherwise the bleeding edge version is located on github: https://github.com/gphoto/libgphoto2/archive/master.zip <br>
+  <br>
+3) Or you can do a git clone: <br>
+  git clone https://github.com/gphoto/libgphoto2.git <br>
+  (Note you need git installed.  E.g. sudo apt-get install git) <br>
+  <br>
+4) Or assuming a version >2.5.8 is out you could grab a stable version at sourceforce: <br>    
+  http://sourceforge.net/projects/gphoto/files/libgphoto/ <br>
+
+To download ghoto2: <br>
+1) Stable version at sourceforce: <br> 
+  http://sourceforge.net/projects/gphoto/files/gphoto/ <br>
+2) Bleeding edge at github: <br>
+  https://github.com/gphoto/gphoto2/archive/master.zip <br>
+3) Git clone: <br>
+  git clone https://github.com/gphoto/gphoto2.git <br>
+
+
+COMPILING LIBGPHOTO2 and GPHOTO2:
 --------------------------------------------------------------------
+First you need to make sure you have these pre-reqs: <br>
+pkg-config <br>
+m4 <br>
+gettext <br>
+autopoint <br>
+autoconf <br>
+automake <br>
+libtool <br>
+ <br>
+For example on Debian/Ubuntu run: <br>
+sudo apt-get install pkg-config m4 gettext autopoint autoconf automake libtool <br>
+ <br>
+Next make sure the source is unzipped for both and then run these commands in each of the source directories: <br>
+-#this with validate the 'configure' script is ready <br>
+ autoreconf --install --symlink -f  <br>
+-#use a custom prefix so we don't affect other versions installed <br>
+ ./configure --prefix=/usr/local   <br>
+-#does the compiling <br>
+ make            <br>
+-#deploy the code <br>
+ sudo make install      <br>                
+ <br>
+To run then update your LD_LIBRARY_PATH and kick off the command: <br>
+export LD_LIBRARY_PATH=/usr/local/lib <br>
+/usr/local/bin/gphoto2 --version <br>
+
+COMPILING IN THE CUSTOMIZATION TO LIBGPHOTO2:
+--------------------------------------------------------------------
+Replace this file:  libgphoto2/camlibs/ptp2/ptpip.c with the one on this site <br>
+Rerun the "make" and "sudo make install" <br>
+TEST! <br>
+
