@@ -6,6 +6,7 @@
 # logging.
 #
 # To use this, update the SONYUPNPDIR path below to the location that you placed code.
+# Also update the USER if desired.
 # Then copy it to your /etc/init.d dir, set permissions, and link to rc dirs
 # e.g.
 # sudo cp start-script.howto /etc/init.d/sony-pm-alt
@@ -25,6 +26,7 @@
 #
 
 SONYUPNPDIR=/usr/share/sony-pm-alt
+USER=root
 
 # Some things that run always
 touch /var/lock/sony-pm-alt
@@ -34,7 +36,7 @@ case "$1" in
   start)
     echo "Starting sony-pm-alt"
     cd  $SONYUPNPDIR
-    python sony-pm-alt.py > /var/log/sony-pm-alt.log 2>&1 &
+    su $USER -c "python sony-pm-alt.py" > /var/log/sony-pm-alt.log 2>&1 &
     ;;
   stop)
     echo "Stopping sony-pm-alt"
