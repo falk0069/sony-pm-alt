@@ -92,7 +92,7 @@ sudo apt-get install pkg-config m4 gettext autopoint autoconf automake libtool
  <br>
 Next make sure the source is unzipped for both and then run these commands in each of the source directories: <br>
 ```
--#this with validate the 'configure' script is ready
+-#this will validate the 'configure' script is ready
  autoreconf --install --symlink -f
 -#use a custom prefix so we don't affect other versions installed
  ./configure --prefix=/usr/local
