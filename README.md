@@ -17,7 +17,7 @@ This was tested with version 2.5.8.1 using a Sony Alpha ILCE-5000  (version 2.5.
 
 MAIN CHALLENGE:
 -----------------------------------------------------------------
-Sony requires some non-standard packets to display the 'Sending...' on the camera.  This also goes for the automatic shut down feature when done.  Without this you have about 2 minutes to transfer the picture before the camera stops and you have no confirmation that it worked.  Also, the camera will remain on so you can't walk away or else your battery will continue to drain.  I was hoping there would be one magic packet to turn these options on, but this doesn't seem to be the case.  Doing a series of tcpdumps I was able to determine what packets make it work.  I started off with over a 100 packets being needed and have finally narrowed it down to 23 packets.  I'm sure it can be narrowed down more, but I haven't found a whole lot of rhyme or reason to it.  I was also hoping I could send these packets directly from python using a different tcp session than gphoto, but no luck.  So, I ended up really hacking up the libgphoto code to make this work.  Maybe one day these can be incorporated in the main gphoto code.  More on the edits later.
+Sony requires some non-standard packets to display the 'Sending...' on the camera.  This also goes for the automatic shut down feature when done.  Without this you have about 2 minutes to transfer the picture before the camera stops and you have no confirmation that it worked.  Also, the camera will remain on so you can't walk away or else your battery will continue to drain.  I was hoping there would be one magic packet to turn these options on, but this doesn't seem to be the case.  Doing a series of tcpdumps I was able to determine what packets make it work.  I started off with over a 100 packets being needed and have finally narrowed it down to 23 packets (update: 4 packets to start and 3 packets to end).  I was also hoping I could send these packets directly from python using a different tcp session than gphoto, but no luck.  So, I ended up really hacking up the libgphoto code to make this work.  The developer of libgphoto was then kind enough to work with me and incorporate changes to make things work without the hacking.
 
 LINKING THE CAMERA AND THE PTP-GUID:
 -----------------------------------------------------------------
@@ -51,12 +51,8 @@ Note: First time will probably fail since the GUID will be wrong
 
 DOWNLOAD SOURCE FOR LIBGPHOTO2 and GPHOTO2:
 -------------------------------------------------------------------
-###Here are four methods for downloading libghoto2: <br>
-1) The developers of gphoto kindly provided a temporary snapshot of version 2.5.8.1.  This is the exact version I was working with.  I'm not sure how long it will be available but here is the link: <br>
-  http://www.lst.de/~mm/libgphoto2-2.5.8.1.tar.bz2 <br>
-  (Note to unzip: ```tar -xvf libgphoto2-2.5.8.1.tar.bz2```) <br>
-  <br>
-2) Otherwise the bleeding edge version is located on github: https://github.com/gphoto/libgphoto2/archive/master.zip <br>
+###Here are three methods for downloading libghoto2: <br>
+2) The bleeding edge version is located on github: https://github.com/gphoto/libgphoto2/archive/master.zip <br>
   <br>
 3) Or you can do a git clone: <br>
   ```git clone https://github.com/gphoto/libgphoto2.git``` <br>
@@ -107,8 +103,9 @@ export LD_LIBRARY_PATH=/usr/local/lib
 ```
 COMPILING IN THE CUSTOMIZATION TO LIBGPHOTO2:
 --------------------------------------------------------------------
-Replace this file:  libgphoto2/camlibs/ptp2/ptpip.c with the one on this site <br>
-Rerun :
+No customizations are needed at this time.  From time to time I might add something in here.  One item I want to continue exploring is the 'Sending' message vs. the 'Sending - automatically shutting down when complete' message. <br>
+<br>
+To test any customizations, rerun :
 ```
 make
 sudo make install
