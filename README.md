@@ -80,10 +80,11 @@ autopoint <br>
 autoconf <br>
 automake <br>
 libtool <br>
+libpopt-dev <br>
  <br>
 For example on Debian/Ubuntu run: <br>
 ```
-sudo apt-get install pkg-config m4 gettext autopoint autoconf automake libtool
+sudo apt-get install pkg-config m4 gettext autopoint autoconf automake libtool libpopt-dev
 ```
  <br>
 Next make sure the source is unzipped for both and then run these commands in each of the source directories: <br>
