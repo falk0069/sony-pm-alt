@@ -84,8 +84,13 @@ class Responder(Thread):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     sock.bind(('', UPNP_PORT))
-    mreq = struct.pack("4sl", socket.inet_aton(BCAST_IP), socket.INADDR_ANY)
-    sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
+    mreq = None
+    try:
+      mreq = struct.pack("4sl", socket.inet_aton(BCAST_IP), socket.INADDR_ANY)
+      sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
+    except socket.error, msg:
+      L.error("socket error: %s" % msg[1])
+      thread.interrupt_main()  #exiting program
 
     sock.settimeout(1)
     while True:
