@@ -113,3 +113,7 @@ sudo make install
 ```
 TEST! <br>
 
+
+USING THE PYTHON SCRIPT - sony-pm-alt.py
+--------------------------------------------------------------------
+This is just a basic python server that will listen for correct UPNP broadcast.  What you will need to do is edit it and update the top few line with your correct information (e.g. paths and GUID).  Once configured, run it.  It shouldn't do much until to you turn on the Sony camera and try to send to PC.  Hopefully it works.  I also include a simple start script to help auto start it when you PC boots up.  
