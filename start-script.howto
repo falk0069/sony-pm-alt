@@ -17,7 +17,7 @@
 # sudo insserv sony-pm-alt
 # sudo /usr/lib/insserv/insserv sony-pm-alt  #run this instead if command not found
 #
-# or if you prefer systemd services check out the sample sony-pm-alt.service
+# or if you prefer systemd services, check out the sample sony-pm-alt.service
 #
 # To start manually:
 # sudo /etc/init.d/sony-pm-alt start
