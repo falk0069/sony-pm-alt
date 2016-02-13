@@ -89,7 +89,7 @@ sudo apt-get install pkg-config m4 gettext autopoint autoconf automake libtool l
 ```
 On CentOS/Redhat run: <br>
 ```
-sudo yum install pkgconfig m4 gettext gettext-devel autoconf automake libtool popt libtool-ltdl-devel
+sudo yum install pkgconfig m4 gettext gettext-devel autoconf automake libtool popt-devel libtool-ltdl-devel
 ```
  <br>
 Next make sure the source is unzipped for both and then run these commands in each of the source directories: <br>
