@@ -1,0 +1,31 @@
+# Example systemd script
+# Edit and place at /usr/lib/systemd/system/
+# To enable:  systemctl enable sony-pm-alt
+# To disable: systemctl disable sony-pm-alt
+# To start:   systemctl start sony-pm-alt
+# To stop:    systemctl stop sony-pm-alt
+#
+
+[Unit]
+Description=sony-pm-alt Service
+After=network.target
+
+[Service]
+Type=simple
+
+# Set to directory where sony-pm-alt.py lives
+#WorkingDirectory=/usr/share/sony-pm-alt
+WorkingDirectory=/home/falkand/sonytransfer
+
+# systemd changes execution from the calling user (possibly root) to this user
+User=root
+
+# Default setting for Type=simple.
+ExecStart=/bin/python sony-pm-alt.py -l /var/log/sony-pm-alt.log
+
+# Whether systemd will continue over-watch and restart on any halt
+#Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
