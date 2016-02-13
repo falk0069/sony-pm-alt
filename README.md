@@ -81,10 +81,15 @@ autoconf <br>
 automake <br>
 libtool <br>
 libpopt-dev <br>
+libltdl-dev <br>
  <br>
 For example on Debian/Ubuntu run: <br>
 ```
-sudo apt-get install pkg-config m4 gettext autopoint autoconf automake libtool libpopt-dev
+sudo apt-get install pkg-config m4 gettext autopoint autoconf automake libtool libpopt-dev libltdl-dev
+```
+On CentOS/Redhat run: <br>
+```
+sudo yum install pkgconfig m4 gettext gettext-devel autoconf automake libtool popt libtool-ltdl-devel
 ```
  <br>
 Next make sure the source is unzipped for both and then run these commands in each of the source directories: <br>
