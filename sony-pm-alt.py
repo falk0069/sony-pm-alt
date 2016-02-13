@@ -16,11 +16,31 @@ GPHOTO_SETTINGS = "~/.gphoto/settings"
 PHOTO_DIR = "/var/lib/Sony"
 CUSTOM_LD_LIBRARY_PATH = "/usr/local/lib"
 PTP_GUID = "00:00:00:00:00:00:00:00:ff:ff:08:00:27:f5:16:4f"
+DEBUG = False
+
+#check for commandline args
+for i,arg in enumerate(sys.argv):
+#Let commandline arg override config
+  if arg == '-d':
+    DEBUG = True
+  #Set logging file
+  elif arg == '-l':
+    if len(sys.argv) > i+1:
+      sys.stdout = open(sys.argv[i+1], 'w')
+      sys.stderr = open(sys.argv[i+1], 'w')
+    else:
+      print "Please provide path the log file after -l"
+      thread.interrupt_main()  #exiting program
+
 
 #Setup Logging Output
 logFormatter = logging.Formatter("%(asctime)s [%(levelname)-5.5s] %(message)s")
 L = logging.getLogger()
-L.setLevel(logging.DEBUG) #set to INFO or ERROR for less logging
+if DEBUG is True:
+  L.setLevel(logging.DEBUG)
+else:
+  L.setLevel(logging.INFO)
+
 consoleHandler = logging.StreamHandler(sys.stdout)
 consoleHandler.setFormatter(logFormatter)
 L.addHandler(consoleHandler)
@@ -89,7 +109,7 @@ class Responder(Thread):
       mreq = struct.pack("4sl", socket.inet_aton(BCAST_IP), socket.INADDR_ANY)
       sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
     except socket.error, msg:
-      L.error("socket error: %s" % msg[1])
+      L.error("setsockopt error: %s" % msg[1])
       thread.interrupt_main()  #exiting program
 
     sock.settimeout(1)
