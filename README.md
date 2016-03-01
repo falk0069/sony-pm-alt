@@ -21,9 +21,7 @@ Sony requires some non-standard packets to display the 'Sending...' on the camer
 
 LINKING THE CAMERA AND THE PTP-GUID:
 -----------------------------------------------------------------
-In order to use this method you do still need to initially install Playmemories on a PC/MAC and link the camera to it.  The key is to obtain the PTP-GUID.  I'm not sure at this point the easiest way to obtain this is it doesn't seem to appear in any config files or settings menus that I can find.  I did find a partial match to the GUID used on the USB controller in the windows registry.  Basically the last 12 digit on this registry entry matched for me if anyone else want to validate: <br>
-HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Enum\USB\VID_14CD&PID_6D00\5&c1e6cce&0&1 <br>
-ContainerID = {a4d7a2f7-c5ae-11e4-93ac-080027f5164f}
+In order to use this method you do still need to initially install Playmemories on a PC/MAC and link the camera to it.  The key is to obtain the PTP-GUID.  PM for Windows uses the MAC addresses of the available interfaces. List them with <code>ipconfig /all</code> on the command line and try them one-by-one.
 
 Otherwise the for-sure method is to run tcpdump/wireshark and watch for the first ptp packet (port 15740).  You will see something like this: <br>
 ```
