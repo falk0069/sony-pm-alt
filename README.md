@@ -79,8 +79,9 @@ If you are paranoid running this with sudo you can "chown" /dev/bus/usb/xxx/yyy 
 
 GETTING GPHOTO2:
 -------------------------------------------------------------------
-To test things out quickly (without the addtional packet injection hack to get the Sony to gracefully transfer files) you probably will want to just grab the latest gphoto2/libgphoto2.  If you are using a Debian/Ubuntu based Linux distro run this: <br>
-```sudo apt-get install gphoto2```  Then to quickly test that your camera will work:<br>
+To test things out quickly (without the compiling or modifying) you probably will want to just grab the latest gphoto2/libgphoto2.  If you are using a Debian/Ubuntu based Linux distro run this: <br>
+```sudo apt-get install gphoto2```  
+Then to quickly test that your camera will work:<br>
 ```
 1. Disable playmemories (disable network, block port 15740, turn off PC, etc)
 2. Turn Camera's 'Send to Computer' option on
@@ -89,6 +90,9 @@ Note: First time will probably fail since the GUID will be wrong
 4. Update the ~/.gphoto/settings that should now exist and replace with correct GUID
 5. Run the gphoto command again <br>
 ```
+
+<b>If you have version 2.5.9 or greater, you shouldn't need to download and compile</b>
+
 
 DOWNLOAD SOURCE FOR LIBGPHOTO2 and GPHOTO2:
 -------------------------------------------------------------------
