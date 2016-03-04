@@ -9,13 +9,13 @@ from shutil import move
 #  sudo pip install requests
 
 #config
-BCAST_IP = "239.255.255.250"
-UPNP_PORT = 1900
+BCAST_IP = "239.255.255.250" #standard upnp multicast address--don't change
+UPNP_PORT = 1900             #standard upnp multicast port--don't change
 GPHOTO_CMD_ARGS = [os.path.expanduser("~/gphoto2-2.5.8/gphoto2/gphoto2"),"-P","--skip-existing"]
 GPHOTO_SETTINGS = "~/.gphoto/settings"
-PHOTO_DIR = "/var/lib/Sony"
+PHOTO_DIR = "/var/lib/Sony"   #photo/videos will be downloaded to here
 CUSTOM_LD_LIBRARY_PATH = "/usr/local/lib"
-PTP_GUID = "00:00:00:00:00:00:00:00:ff:ff:08:00:27:f5:16:4f"
+PTP_GUID = "ff:ff:52:54:00:b6:fd:a9:ff:ff:52:3c:28:07:a9:3a" #default value for sony-guid-setter
 DEBUG = False
 
 #check for commandline args
@@ -135,6 +135,7 @@ class Responder(Thread):
               if "Sony Corporation" in r.content:
                 L.debug("Camera Found...starting gphoto")
                 ValidateUpdateSettings(GPHOTO_SETTINGS, addr[0], PTP_GUID)
+                L.debug("Executing: {}".format(GPHOTO_CMD_ARGS))
                 PROC = subprocess.Popen(GPHOTO_CMD_ARGS)
           L.debug("----------------------")
           L.debug("  ")
