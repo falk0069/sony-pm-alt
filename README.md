@@ -21,11 +21,18 @@ Sony requires some non-standard packets to display the 'Sending...' on the camer
 
 LINKING THE CAMERA AND THE PTP-GUID:
 -----------------------------------------------------------------
-In order to use this method you do still need to initially install Playmemories on a PC/MAC and link the camera to it.  The key is to obtain the PTP-GUID.  PM for Windows uses the MAC addresses of the available interfaces. List them with <code>ipconfig /all</code> on the command line and try them one-by-one.
+In order to use this tool you need to link the camera and generate the PTP-GUID.  I'm going to list out a few method.
 
-Alternatively, you can use sony-guid-setter.c to set the GUIDs from Linux. It's a one-shot tool that will set your camera's authorized GUID defined in its source. Compile it against libusb with <code>gcc -lusb-1.0 sony-guid-setter.c -o sony-guid-setter</code> and run it as <code>sony-guid-setter -g VID:PID</code>. You can find your camera's VID:PID by running lsusb. Most likely, you would want to run this as a user and not as root. "chown" the USB device under /dev/bus/usb/xxx/yyy to your user, if the utility fails with a permission error.
+###Method 1: Playmemories on a PC/MAC
+If you already have Playmemories installed and want to switch to Linux this is the way to go.  Bascially, after you are are "connected" your GUID will be:<br>
+<code>00:00:00:00:00:00:00:00:ff:ff:aa:bb:cc:dd:ee:ff</code><br>
+where <code>aa:bb:cc:dd:ee:ff</code> is the MAC Address of your primary interface that communicates with your camera.  On windows you can see the MAC Address by running 'ipconfig /all' and looking at the 'Physical Address'.  On Mac run 'ifconfig' and look at the 'ether' value.
 
-Otherwise the for-sure method is to run tcpdump/wireshark after you used PM on Windows/Mac and watch for the first ptp packet (port 15740).  You will see something like this: <br>
+###Method 2: Sony-guid-setter
+Thanks to Clemens Fruhwirth we now have a GUID setting option from Linux.  He provided some reverse engineered code that requires compiling but can link the camera and set the GUID.  This is the option to use if you don't have access to a Windows/Mac.  More on how to compile and run this in the next section.  But basically once compiled you run it like: <code>sony-guid-setter -g VID:PID</code> and it will link and set the GUID to <code>ff:ff:52:54:00:b6:fd:a9:ff:ff:52:3c:28:07:a9:3a</code>.  If you feel insecure you can change this.
+
+###Method 3: tcpdump/wireshark
+This is really the same as method 1, but if GUID is still unknown you can run tcpdump/wireshark and verify what it is.  What you would do is run tcpdump/wireshark after you used PM on Windows/Mac and watch for the first ptp packet (port 15740).  You will see something like this: <br>
 ```
 00000000  2c 00 00 00 01 00 00 00  00 00 00 00 00 00 00 00 ,....... ........
 00000010  ff ff 08 00 27 f5 16 4f  57 00 49 00 4e 00 37 00 ....'..O W.I.N.7.
@@ -36,12 +43,46 @@ Where bytes 9 - 24 are the GUID: 0000000000000000ffff080027f5164f <br>
 Wireshark will nicely display this in the info window like so: <br>
 Init Command Request GUID: 0000000000000000ffff080027f5164f Name: WIN7-VM <br>
 
+COOL NEW SONY-GUID-SETTER:
+-------------------------------------------------------------------
+So, in order to use this new tool you will need to compile it.  The main prereq is the development package for libusb-1.0 version > 1.0.16.  If you are on a newer Debian distro you likely can just run <code>sudo apt-get install libusb-1.0.0.dev</code>. Then to compile run: <code>gcc sony-guid-setter.c -lusb-1.0 -o sony-guid-setter</code><br>
+<br>
+On Redhat/Centos or any other older Linux distro, you probably won't be so lucky.  On Redhat/Centos they only provide libusbx-devel which is too old to work.  What I ended up doing is grabbing libusb from sourceforge and compiling using these steps: <br>
+```
+wget https://sourceforge.net/projects/libusb/files/latest/download?source=files -O libusb-1.0.tar.bz2
+tar -xvf libusb-1.0.tar.bz2
+cd libusb-1.0.*
+#need prereq udev to compile
+ sudo yum install libudev-devel      #if Redhat-like
+ sudo apt-get install libudev-dev    #if Debian-like
+./configure
+make
+sudo make install            #installs to /usr/local/ by default
+gcc -Wl,-rpath -Wl,/usr/local/lib -I/usr/local/include -L/usr/local/lib sony-guid-setter.c -lusb-1.0 -o sony-guid-setter
+```
+Note: if you are concerned about the hardcoded <code>ff:ff:52:54:00:b6:fd:a9:ff:ff:52:3c:28:07:a9:3a</code> just edit lines 300 and 301 to fit your needs and compile.<br>
+<br>
+Next you need to find the VID:PID.  So, just plug your camera into your PC via a USB cable and turn it on.  Then run <code>lsusb</code>.  You will see something like this:
+```
+Bus 001 Device 002: ID 1871:0d01 Aveo Technology Corp. USB2.0 Camera
+Bus 003 Device 007: ID 054c:0994 Sony Corp.
+Bus 004 Device 002: ID 046d:c001 Logitech, Inc. N48/M-BB48/M-UK96A [FirstMouse Plus]
+```
+In the case above the <code>054c:0994</code> is what you want.<br>
+<br>
+You can then run something like this to link the camera and set the GUID
+```
+sudo ./sony-guid-setter -g 054c:0994
+```
+If you are paranoid running this with sudo you can "chown" /dev/bus/usb/xxx/yyy to your user (where xxx and yyy is the Bus and Device number listed with 'lsusb'
+
+
 GETTING GPHOTO2:
 -------------------------------------------------------------------
 To test things out quickly (without the addtional packet injection hack to get the Sony to gracefully transfer files) you probably will want to just grab the latest gphoto2/libgphoto2.  If you are using a Debian/Ubuntu based Linux distro run this: <br>
 ```sudo apt-get install gphoto2```  Then to quickly test that your camera will work:<br>
 ```
-1. Disable playmemories (disable network, block port 15740, turn PC, etc)
+1. Disable playmemories (disable network, block port 15740, turn off PC, etc)
 2. Turn Camera's 'Send to Computer' option on
 3. Run: gphoto2 --port ptpip:192.168.1.222 --summary  #Update IP accordingly
 Note: First time will probably fail since the GUID will be wrong
