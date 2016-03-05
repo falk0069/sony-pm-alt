@@ -137,7 +137,7 @@ On CentOS/Redhat run: <br>
 sudo yum install pkgconfig m4 gettext gettext-devel autoconf automake libtool popt-devel libtool-ltdl-devel
 ```
  <br>
-Next make sure the source is unzipped for both and then run these commands in each of the source directories: <br>
+Next make sure the source is unzipped for both and then run these commands in each of the source directories (do libgphoto2 first): <br>
 ```
 -#this will validate the 'configure' script is ready
  autoreconf --install --symlink -f
