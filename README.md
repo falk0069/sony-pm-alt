@@ -96,17 +96,17 @@ Note: First time will probably fail since the GUID will be wrong
 
 DOWNLOAD SOURCE FOR LIBGPHOTO2 and GPHOTO2:
 -------------------------------------------------------------------
-###Here are three methods for downloading libghoto2: <br>
-2) The bleeding edge version is located on github: https://github.com/gphoto/libgphoto2/archive/master.zip <br>
+###Here are three methods for downloading libgphoto2: <br>
+1) The bleeding edge version is located on github: https://github.com/gphoto/libgphoto2/archive/master.zip <br>
   <br>
-3) Or you can do a git clone: <br>
+2) Or you can do a git clone: <br>
   ```git clone https://github.com/gphoto/libgphoto2.git``` <br>
   (Note you need git installed.  E.g. ```sudo apt-get install git```) <br>
   <br>
-4) Or assuming a version >2.5.8 is out you could grab a stable version at sourceforce: <br>    
+3) Or assuming a version >2.5.8 is out you could grab a stable version at sourceforce: <br>    
   http://sourceforge.net/projects/gphoto/files/libgphoto/ <br>
 
-###To download ghoto2: <br>
+###And three methods for downloading gphoto2: <br>
 1) Stable version at sourceforce: <br> 
   http://sourceforge.net/projects/gphoto/files/gphoto/ <br>
 2) Bleeding edge at github: <br>
