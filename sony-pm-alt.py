@@ -8,15 +8,27 @@ from shutil import move
 #  sudo apt-get install python-pip
 #  sudo pip install requests
 
-#config
+#CONFIG
+#------------------------------------------------------------------
+#Probably don't want to change:
 BCAST_IP = "239.255.255.250" #standard upnp multicast address--don't change
 UPNP_PORT = 1900             #standard upnp multicast port--don't change
-GPHOTO_CMD_ARGS = [os.path.expanduser("~/gphoto2-2.5.8/gphoto2/gphoto2"),"-P","--skip-existing"]
-GPHOTO_SETTINGS = "~/.gphoto/settings"
-PHOTO_DIR = "/var/lib/Sony"   #photo/videos will be downloaded to here
-CUSTOM_LD_LIBRARY_PATH = "/usr/local/lib"
+GPHOTO_CMD_ARGS = ["/usr/local/bin/gphoto2","-P","--skip-existing"]
+GPHOTO_SETTINGS = "~/.gphoto/settings" #default location gphoto2 uses
+CUSTOM_LD_LIBRARY_PATH = "/usr/local/lib" #common path if self-compiled
+
+#Might want to change:
+PHOTO_DIR = "/var/lib/Sony"  #photo/videos will be downloaded to here
 PTP_GUID = "ff:ff:52:54:00:b6:fd:a9:ff:ff:52:3c:28:07:a9:3a" #default value for sony-guid-setter
 DEBUG = False
+#------------------------------------------------------------------
+
+#replace '~' if used
+GPHOTO_CMD_ARGS[0] = os.path.expanduser(GPHOTO_CMD_ARGS[0])
+GPHOTO_SETTINGS = os.path.expanduser(GPHOTO_SETTINGS)
+PHOTO_DIR = os.path.expanduser(PHOTO_DIR)
+CUSTOM_LD_LIBRARY_PATH = os.path.expanduser(CUSTOM_LD_LIBRARY_PATH)
+
 
 #check for commandline args
 for i,arg in enumerate(sys.argv):
@@ -47,8 +59,18 @@ L.addHandler(consoleHandler)
 
 L.info("Server starting")
 
+L.info("Setting download dir [PHOTO_DIR] to: {}".format(PHOTO_DIR))
 os.chdir(PHOTO_DIR)
+L.info("Setting LD_LIBRARY_PATH to: {}".format(CUSTOM_LD_LIBRARY_PATH))
 os.environ["LD_LIBRARY_PATH"] = CUSTOM_LD_LIBRARY_PATH
+
+#Display other settings for debugging
+L.debug("BCAST_IP set to: {}".format(BCAST_IP))
+L.debug("UPNP_PORT set to: {}".format(UPNP_PORT))
+L.debug("GPHOTO_SETTINGS set to: {}".format(GPHOTO_SETTINGS))
+L.debug("PTP_GUID set to: {}".format(PTP_GUID))
+L.debug("GPHOTO_CMD_ARGS set to: {}".format(GPHOTO_CMD_ARGS))
+
 
 #NOTES...
 #The following USN have been seen coming from the Sony camera when turning
@@ -74,19 +96,20 @@ gphoto2=model=PTP/IP Camera
 ptp2_ip=guid={}
 """.format(ip,guid)
   current_settings = ""
-  if (os.path.isfile(os.path.expanduser(file))):
-    with open (os.path.expanduser(file), "r") as myfile:
+  if (os.path.isfile(file)):
+    with open (file, "r") as myfile:
       current_settings = myfile.read()
+      L.debug("Current settings in {}\n----------\n{}----------".format(file,current_settings))
 
   if ( new_settings != current_settings ):
     L.debug("New settings file needed")
     #backup if previous exists
-    if (os.path.isfile(os.path.expanduser(file))):
+    if (os.path.isfile(file)):
       #backupfile = file + "." + time.strftime("%Y%m%d%H%M%S") + ".bak"
       backupfile = "{}.{}.bak".format(file,time.strftime("%Y%m%d%H%M%S"))
       L.info("Creating backup: {}".format(backupfile))
-      move(os.path.expanduser(file), os.path.expanduser(backupfile))
-    with open(os.path.expanduser(file), "w") as myfile:
+      move(file, backupfile)
+    with open(file, "w") as myfile:
       myfile.write(new_settings)
     L.info("New settings written to {}".format(file))
     L.debug("\n----------\n{}----------".format(new_settings))
@@ -135,6 +158,9 @@ class Responder(Thread):
               if "Sony Corporation" in r.content:
                 L.debug("Camera Found...starting gphoto")
                 ValidateUpdateSettings(GPHOTO_SETTINGS, addr[0], PTP_GUID)
+                L.debug("Updating command to include: --port ptpip:{}".format(addr[0]))
+                GPHOTO_CMD_ARGS.insert(1, "--port")
+                GPHOTO_CMD_ARGS.insert(2, "ptpip:{}".format(addr[0]))
                 L.debug("Executing: {}".format(GPHOTO_CMD_ARGS))
                 PROC = subprocess.Popen(GPHOTO_CMD_ARGS)
           L.debug("----------------------")
