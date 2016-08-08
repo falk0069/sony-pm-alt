@@ -167,3 +167,32 @@ TEST! <br>
 USING THE PYTHON SCRIPT - sony-pm-alt.py
 --------------------------------------------------------------------
 This is just a basic python server that will listen for correct UPNP broadcast.  What you will need to do is edit it and update the top few line with your correct information (e.g. paths and GUID).  Once configured, run it.  It shouldn't do much until to you turn on the Sony camera and try to send to PC.  Hopefully it works.  I also include a simple start script to help auto start it when you PC boots up.  
+
+
+TROUBLESHOOTING:
+-----------------------------------------------------------------
+* Make sure you linked the camera.  See LINKING THE CAMERA AND THE PTP-GUID section <br>
+
+* Edit the sony-pm-alt.py script and update line 19 to: ```DEBUG = True``` <br>
+
+* Manually run the script: ```./sony-pm-alt.py``` <br>
+
+* Turn on your camera and do the 'Send to Computer' <br>
+  At this point you should see logs being printed from the sony-pm-alt.py script with details.
+  
+* If you don't, try running ghoto2 directly, but first you need to determine the camera's IP. <br>
+  To do this you have about 2 minutes to figure it out after you select the 'Send to Computer' option.<br>
+
+* The easiest method is probably going to be to log into your Internet router and look for the connected wireless client<br>
+
+* You could also try running tcpdump and watch for upnp traffic: ```sudo tcpdump -i any udp port 1900``` <br>
+  You should see lines like this:  ```12:18:50.948572 IP 192.168.1.253.27998 > 239.255.255.250.ssdp: UDP, length 291``` <br>
+  Where ```192.168.1.253``` is the IP you want. <br>
+
+* Once you have the IP, do the 'Send to Computer' again and run gphoto2 with the correct IP.  Example: ```gphoto2 --port ptpip:192.168.1.253 --summary``` <br>
+
+* If this was the first running, it may have failed due to a bad GUID.  So, validate the ~/.gphoto/settings file and make sure the GUID is correct.  If you used the sony-guid-setter, set it to: ```00:00:00:00:00:00:00:00:ff:ff:08:00:27:f5:16:4f``` <br>
+
+* Run the gphoto2 command again and make sure it returns without errors <br>
+
+* Feel free to log a ticket with your logs for help debugging <br>
