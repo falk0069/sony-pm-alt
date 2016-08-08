@@ -7,7 +7,7 @@ I created this project because I wanted to be able to transfer my pictures to my
 
 TECHNOLOGY:
 -----------------------------------------------------------------
-The way Sony transfers pictures is via PTP/IP (Picture Transfer Protocol over Internet Protocol).  The moment you enable the 'Send to Computer' option from the Camera it starts braodcasting UPNP UDP packets across the network to multicast address (239.255.255.250:1900).  This is also known as Simple Service Discovery Protocol (SSDP).  At the same time the camera starts up A PTP/IP server on port 15740.  The UPNP packets contain all the connection details.  The Playmemories app (or sony-pm-alt.py) see these packets and then turn around an hit the PTP/IP servers and transfer the pictures.
+The way Sony transfers pictures is via PTP/IP (Picture Transfer Protocol over Internet Protocol).  The moment you enable the 'Send to Computer' option from the Camera it starts broadcasting UPNP UDP packets across the network to multicast address (239.255.255.250:1900).  This is also known as Simple Service Discovery Protocol (SSDP).  At the same time the camera starts up A PTP/IP server on port 15740.  The UPNP packets contain all the connection details.  The Playmemories app (or sony-pm-alt.py) see these packets and then turn around an hit the PTP/IP servers and transfer the pictures.
 
 TRANSFER SOFTWARE: GPHOTO2:
 -----------------------------------------------------------------
@@ -88,13 +88,13 @@ Then to quickly test that your camera will work:<br>
 3. Run: gphoto2 --port ptpip:192.168.1.222 --summary  #Update IP accordingly
 Note: First time will probably fail since the GUID will be wrong
 4. Update the ~/.gphoto/settings that should now exist and replace with correct GUID
-5. Run the gphoto command again <br>
+5. Run the gphoto command again
 ```
 
-<b>If you have version 2.5.9 or greater, you shouldn't need to download and compile</b>
+<b>If you have version 2.5.9 or greater, you shouldn't need to do the following downloading and compiling sections</b>
 
 
-DOWNLOAD SOURCE FOR LIBGPHOTO2 and GPHOTO2:
+DOWNLOAD SOURCE FOR LIBGPHOTO2 and GPHOTO2 (shouldn't be needed anymore):
 -------------------------------------------------------------------
 ###Here are three methods for downloading libgphoto2: <br>
 1) The bleeding edge version is located on github: https://github.com/gphoto/libgphoto2/archive/master.zip <br>
@@ -115,7 +115,7 @@ DOWNLOAD SOURCE FOR LIBGPHOTO2 and GPHOTO2:
   ```git clone https://github.com/gphoto/gphoto2.git``` <br>
 
 
-COMPILING LIBGPHOTO2 and GPHOTO2:
+COMPILING LIBGPHOTO2 and GPHOTO2  (shouldn't be needed anymore):
 --------------------------------------------------------------------
 First you need to make sure you have these pre-reqs: <br>
 pkg-config <br>
@@ -152,7 +152,7 @@ To run then update your LD_LIBRARY_PATH and kick off the command:
 export LD_LIBRARY_PATH=/usr/local/lib
 /usr/local/bin/gphoto2 --version
 ```
-COMPILING IN THE CUSTOMIZATION TO LIBGPHOTO2:
+COMPILING IN THE CUSTOMIZATION TO LIBGPHOTO2  (shouldn't be needed anymore):
 --------------------------------------------------------------------
 No customizations are needed at this time.  From time to time I might add something in here.  One item I want to continue exploring is the 'Sending' message vs. the 'Sending - automatically shutting down when complete' message. <br>
 <br>
