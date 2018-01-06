@@ -77,6 +77,22 @@ sudo ./sony-guid-setter -g 054c:0994
 If you are paranoid running this with sudo you can "chown" /dev/bus/usb/xxx/yyy to your user (where xxx and yyy is the Bus and Device number listed with 'lsusb'
 
 
+Run in Docker (or manually see below)
+-----------------------------------------------
+
+0. Set your camera with default GUID (see the above section)
+
+`$ ./sony-guid-setter -g YOUR_CAMERA_VID:PID`
+
+1. Build image
+
+`$ docker build . -t sony-pm-alt`
+
+2. Run
+
+`$ docker run --name=sony-pm-alt --net=host -v /folder/for/incoming/photos:/var/lib/Sony sony-pm-alt`
+
+
 GETTING GPHOTO2:
 -------------------------------------------------------------------
 To test things out quickly (without the compiling or modifying) you probably will want to just grab the latest gphoto2/libgphoto2.  If you are using a Debian/Ubuntu based Linux distro run this: <br>
