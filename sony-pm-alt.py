@@ -13,7 +13,7 @@ from shutil import move
 #Probably don't want to change:
 BCAST_IP = "239.255.255.250" #standard upnp multicast address--don't change
 UPNP_PORT = 1900             #standard upnp multicast port--don't change
-GPHOTO_CMD_ARGS = ["/usr/local/bin/gphoto2","-P","--skip-existing"]
+GPHOTO_CMD_ARGS = ["gphoto2","-P","--skip-existing"]
 GPHOTO_SETTINGS = "~/.gphoto/settings" #default location gphoto2 uses
 CUSTOM_LD_LIBRARY_PATH = "/usr/local/lib" #common path if self-compiled
 
