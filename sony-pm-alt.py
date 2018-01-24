@@ -13,7 +13,8 @@ from shutil import move
 #Probably don't want to change:
 BCAST_IP = "239.255.255.250" #standard upnp multicast address--don't change
 UPNP_PORT = 1900             #standard upnp multicast port--don't change
-GPHOTO_CMD_ARGS = ["gphoto2","-P","--skip-existing"]
+GPHOTO_CMD = "gphoto2"
+GPHOTO_ARGS = ["-P","--skip-existing"]
 GPHOTO_SETTINGS = "~/.gphoto/settings" #default location gphoto2 uses
 CUSTOM_LD_LIBRARY_PATH = "/usr/local/lib" #common path if self-compiled
 
@@ -24,7 +25,7 @@ DEBUG = False
 #------------------------------------------------------------------
 
 #replace '~' if used
-GPHOTO_CMD_ARGS[0] = os.path.expanduser(GPHOTO_CMD_ARGS[0])
+GPHOTO_CMD = os.path.expanduser(GPHOTO_CMD)
 GPHOTO_SETTINGS = os.path.expanduser(GPHOTO_SETTINGS)
 PHOTO_DIR = os.path.expanduser(PHOTO_DIR)
 CUSTOM_LD_LIBRARY_PATH = os.path.expanduser(CUSTOM_LD_LIBRARY_PATH)
@@ -69,7 +70,7 @@ L.debug("BCAST_IP set to: {}".format(BCAST_IP))
 L.debug("UPNP_PORT set to: {}".format(UPNP_PORT))
 L.debug("GPHOTO_SETTINGS set to: {}".format(GPHOTO_SETTINGS))
 L.debug("PTP_GUID set to: {}".format(PTP_GUID))
-L.debug("GPHOTO_CMD_ARGS set to: {}".format(GPHOTO_CMD_ARGS))
+L.debug("GPHOTO_ARGS set to: {}".format(GPHOTO_ARGS))
 
 
 #NOTES...
@@ -158,11 +159,11 @@ class Responder(Thread):
               if "Sony Corporation" in r.content:
                 L.debug("Camera Found...starting gphoto")
                 ValidateUpdateSettings(GPHOTO_SETTINGS, addr[0], PTP_GUID)
-                L.debug("Updating command to include: --port ptpip:{}".format(addr[0]))
-                GPHOTO_CMD_ARGS.insert(1, "--port")
-                GPHOTO_CMD_ARGS.insert(2, "ptpip:{}".format(addr[0]))
-                L.debug("Executing: {}".format(GPHOTO_CMD_ARGS))
-                PROC = subprocess.Popen(GPHOTO_CMD_ARGS)
+                gphoto_cmd = [GPHOTO_CMD,
+                              "--port", "ptpip:{}".format(addr[0])] + \
+                             GPHOTO_ARGS
+                L.debug("Executing: {}".format(gphoto_cmd))
+                PROC = subprocess.Popen(gphoto_cmd)
           L.debug("----------------------")
           L.debug("  ")
 #        else:
