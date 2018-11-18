@@ -45,9 +45,11 @@ Init Command Request GUID: 0000000000000000ffff080027f5164f Name: WIN7-VM <br>
 
 COOL NEW SONY-GUID-SETTER:
 -------------------------------------------------------------------
-So, in order to use this new tool you will need to compile it.  The main prereq is the development package for libusb-1.0 version > 1.0.16.  If you are on a newer Debian distro you likely can just run <code>sudo apt-get install libusb-1.0.0.dev</code>. Then to compile run: <code>gcc sony-guid-setter.c -lusb-1.0 -o sony-guid-setter</code><br>
+So, in order to use this new tool you will need to compile it.  The main prereq is the development package for libusb-1.0 version > 1.0.16.  If you are on a newer Debian distro you likely can just run <code>sudo apt-get install libusb-1.0.0.dev</code>. On a newer Fedora you can run <code>sudo dnf install libusbx-devel</code>.
+
+Then to compile run: <code>gcc sony-guid-setter.c -lusb-1.0 -o sony-guid-setter</code><br>
 <br>
-On Redhat/Centos or any other older Linux distro, you probably won't be so lucky.  On Redhat/Centos they only provide libusbx-devel which is too old to work.  What I ended up doing is grabbing libusb from sourceforge and compiling using these steps: <br>
+On older Redhat/Centos or any other older Linux distro, you probably won't be so lucky, the package may be missing or too old. What I ended up doing is grabbing libusb from sourceforge and compiling using these steps: <br>
 ```
 wget https://sourceforge.net/projects/libusb/files/latest/download?source=files -O libusb-1.0.tar.bz2
 tar -xvf libusb-1.0.tar.bz2
