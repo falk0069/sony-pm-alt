@@ -7,7 +7,7 @@ I created this project because I wanted to be able to transfer my pictures to my
 
 TECHNOLOGY:
 -----------------------------------------------------------------
-The way Sony transfers pictures is via PTP/IP (Picture Transfer Protocol over Internet Protocol).  The moment you enable the 'Send to Computer' option from the Camera it starts broadcasting UPNP UDP packets across the network to multicast address (239.255.255.250:1900).  This is also known as Simple Service Discovery Protocol (SSDP).  At the same time the camera starts up A PTP/IP server on port 15740.  The UPNP packets contain all the connection details.  The Playmemories app (or sony-pm-alt.py) see these packets and then turn around an hit the PTP/IP servers and transfer the pictures.
+The way Sony transfers pictures is via PTP/IP (Picture Transfer Protocol over Internet Protocol).  The moment you enable the 'Send to Computer' option from the Camera it starts broadcasting UPNP UDP packets across the network to the multicast address (239.255.255.250:1900).  This is also known as Simple Service Discovery Protocol (SSDP).  At the same time the camera starts up A PTP/IP server on port 15740.  The UPNP packets contain all the connection details.  The Playmemories app (or sony-pm-alt.py) see these packets and then turn around an hit the PTP/IP servers and transfer the pictures.
 
 TRANSFER SOFTWARE: GPHOTO2:
 -----------------------------------------------------------------
@@ -29,7 +29,7 @@ If you already have Playmemories installed and want to switch to Linux this is t
 where <code>aa:bb:cc:dd:ee:ff</code> is the MAC Address of your primary interface that communicates with your camera.  On windows you can see the MAC Address by running 'ipconfig /all' and looking at the 'Physical Address'.  On Mac run 'ifconfig' and look at the 'ether' value.
 
 ###Method 2: Sony-guid-setter
-Thanks to Clemens Fruhwirth we now have a GUID setting option from Linux.  He provided some reverse engineered code that requires compiling but can link the camera and set the GUID.  This is the option to use if you don't have access to a Windows/Mac.  More on how to compile and run this in the next section.  But basically once compiled you run it like: <code>sony-guid-setter -g VID:PID</code> and it will link and set the GUID to <code>ff:ff:52:54:00:b6:fd:a9:ff:ff:52:3c:28:07:a9:3a</code>.  If you feel insecure you can change this.
+Thanks to Clemens Fruhwirth we now have a GUID setting option from Linux.  He provided some reverse engineered code that requires compiling but can link the camera and set the GUID.  This is the option to use if you don't have access to a Windows/Mac.  More on how to compile and run this in the next section.  But basically once compiled you connect your camera via a usb cable and run it like: <code>sony-guid-setter -g YOUR_CAMERA_VID:PID</code> and it will link and set the GUID to <code>ff:ff:52:54:00:b6:fd:a9:ff:ff:52:3c:28:07:a9:3a</code>.  If you feel insecure you can change this.  More on this later.
 
 ###Method 3: tcpdump/wireshark
 This is really the same as method 1, but if GUID is still unknown you can run tcpdump/wireshark and verify what it is.  What you would do is run tcpdump/wireshark after you used PM on Windows/Mac and watch for the first ptp packet (port 15740).  You will see something like this: <br>
@@ -64,7 +64,7 @@ gcc -Wl,-rpath -Wl,/usr/local/lib -I/usr/local/include -L/usr/local/lib sony-gui
 ```
 Note: if you are concerned about the hardcoded <code>ff:ff:52:54:00:b6:fd:a9:ff:ff:52:3c:28:07:a9:3a</code> just edit lines 300 and 301 to fit your needs and compile.<br>
 <br>
-Next you need to find the VID:PID.  So, just plug your camera into your PC via a USB cable and turn it on.  Then run <code>lsusb</code>.  You will see something like this:
+Next you need to find the VID:PID of you camera.  So, just plug your camera into your PC via a USB cable and turn it on.  Then run <code>lsusb</code>.  You will see something like this:
 ```
 Bus 001 Device 002: ID 1871:0d01 Aveo Technology Corp. USB2.0 Camera
 Bus 003 Device 007: ID 054c:0994 Sony Corp.
