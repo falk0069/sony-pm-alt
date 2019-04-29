@@ -11,7 +11,7 @@ The way Sony transfers pictures is via PTP/IP (Picture Transfer Protocol over In
 
 TRANSFER SOFTWARE: GPHOTO2:
 -----------------------------------------------------------------
-The sony-pm-alt.py pytho script is really only the UPNP listener.  The real magic comes from the open source gphoto software: http://www.gphoto.com/.  Basically once the PTP/IP mode is enabled ('Send to Computer' option selected), you can run a command like this to download all the pictures/videos: <br>
+The sony-pm-alt.py python script is really only the UPNP listener.  The real magic comes from the open source gphoto software: http://www.gphoto.com/.  Basically once the PTP/IP mode is enabled ('Send to Computer' option selected), you can run a command like this to download all the pictures/videos: <br>
 ```gphoto2 -P --port ptpip:192.168.1.222 --skip-existing```   #assuming your camera's IP is 192.168.1.222 <br>
 This was tested with version 2.5.8.1 using a Sony Alpha ILCE-5000  (version 2.5.8 had an issue for me) <br>
 
@@ -103,11 +103,12 @@ Then to quickly test that your camera will work:<br>
 ```
 1. Disable playmemories (disable network, block port 15740, turn off PC, etc)
 2. Turn Camera's 'Send to Computer' option on
-3. Run: gphoto2 --port ptpip:192.168.1.222 --summary  #Update IP accordingly
+3. Run: gphoto2 --port ptpip:192.168.1.222 --summary  #Update IP (192.168.1.222) to match your camera's
 Note: First time will probably fail since the GUID will be wrong
 4. Update the ~/.gphoto/settings that should now exist and replace with correct GUID
 5. Run the gphoto command again
 ```
+Once you verify it will work for you, try out the sony-pm-alt.py script and see if you can automate it.  See the USING THE PYTHON SCRIPT section below.
 
 <b>If you have version 2.5.9 or greater, you shouldn't need to do the following downloading and compiling sections</b>
 
