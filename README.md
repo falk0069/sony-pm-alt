@@ -7,7 +7,7 @@ I created this project because I wanted to be able to transfer my pictures to my
 
 TECHNOLOGY:
 -----------------------------------------------------------------
-The way Sony transfers pictures is via PTP/IP (Picture Transfer Protocol over Internet Protocol).  The moment you enable the 'Send to Computer' option from the Camera it starts broadcasting UPNP UDP packets across the network to the multicast address (239.255.255.250:1900).  This is also known as Simple Service Discovery Protocol (SSDP).  At the same time the camera starts up A PTP/IP server on port 15740.  The UPNP packets contain all the connection details.  The Playmemories app (or sony-pm-alt.py) see these packets and then turn around an hit the PTP/IP servers and transfer the pictures.
+The way Sony transfers pictures is via PTP/IP (Picture Transfer Protocol over Internet Protocol).  The moment you enable the 'Send to Computer' option from the Camera it starts broadcasting UPNP UDP packets across the network to the multicast address (239.255.255.250:1900).  This is also known as Simple Service Discovery Protocol (SSDP).  At the same time the camera starts up A PTP/IP server on port 15740.  The UPNP packets contain all the connection details.  The Playmemories app (or sony-pm-alt.py) see these packets and then turns around and hits the PTP/IP server and transfer the pictures.
 
 TRANSFER SOFTWARE: GPHOTO2:
 -----------------------------------------------------------------
@@ -157,20 +157,25 @@ sudo yum install pkgconfig m4 gettext gettext-devel autoconf automake libtool po
 ```
  <br>
 Next make sure the source is unzipped for both and then run these commands in each of the source directories (do libgphoto2 first): <br>
-```
--#this will validate the 'configure' script is ready
- autoreconf --install --symlink -f
--#use a custom prefix so we don't affect other versions installed
- ./configure --prefix=/usr/local
--#does the compiling
- make            
--#deploy the code
- sudo make install                     
 
-To run then update your LD_LIBRARY_PATH and kick off the command:
+```
+/* this will validate the 'configure' script is ready */
+autoreconf --install --symlink -f
+ 
+/* use a custom prefix so we don't affect other versions installed */
+./configure --prefix=/usr/local
+ 
+/* does the compiling */
+make   
+ 
+/* deploy the code */
+sudo make install                     
+
+/* To run then update your LD_LIBRARY_PATH and kick off the commands: */
 export LD_LIBRARY_PATH=/usr/local/lib
 /usr/local/bin/gphoto2 --version
 ```
+
 COMPILING IN THE CUSTOMIZATION TO LIBGPHOTO2  (shouldn't be needed anymore):
 --------------------------------------------------------------------
 No customizations are needed at this time.  From time to time I might add something in here.  One item I want to continue exploring is the 'Sending' message vs. the 'Sending - automatically shutting down when complete' message. <br>
