@@ -15,6 +15,8 @@ The sony-pm-alt.py python script is really only the UPNP listener.  The real mag
 ```gphoto2 -P --port ptpip:192.168.1.222 --skip-existing```   #assuming your camera's IP is 192.168.1.222 <br>
 This was tested with version 2.5.8.1 using a Sony Alpha ILCE-5000  (version 2.5.8 had an issue for me) <br>
 
+Note: User HBDK noticed a shutdown issue starting with a version between 2.5.16 and 2.5.23.  See issue #14: https://github.com/falk0069/sony-pm-alt/issues/14
+
 MAIN CHALLENGE:
 -----------------------------------------------------------------
 Sony requires some non-standard packets to display the 'Sending...' on the camera.  This also goes for the automatic shut down feature when done.  Without this you have about 2 minutes to transfer the picture before the camera stops and you have no confirmation that it worked.  Also, the camera will remain on so you can't walk away or else your battery will continue to drain.  I was hoping there would be one magic packet to turn these options on, but this doesn't seem to be the case.  Doing a series of tcpdumps I was able to determine what packets make it work.  I started off with over a 100 packets being needed and have finally narrowed it down to 23 packets (update: 4 packets to start and 3 packets to end).  I was also hoping I could send these packets directly from python using a different tcp session than gphoto, but no luck.  So, I ended up really hacking up the libgphoto code to make this work.  The developer of libgphoto was then kind enough to work with me and incorporate changes to make things work without the hacking.
@@ -110,7 +112,8 @@ Note: First time will probably fail since the GUID will be wrong
 ```
 Once you verify it will work for you, try out the sony-pm-alt.py script and see if you can automate it.  See the USING THE PYTHON SCRIPT section below.
 
-<b>If you have version 2.5.9 or greater, you shouldn't need to do the following downloading and compiling sections</b>
+<b>If you have version between 2.5.9 - 2.5.15, you shouldn't need to do the following downloading and compiling sections</b>
+
 
 
 DOWNLOAD SOURCE FOR LIBGPHOTO2 and GPHOTO2 (shouldn't be needed anymore):
@@ -218,5 +221,7 @@ TROUBLESHOOTING:
 * If this was the first running, it may have failed due to a bad GUID.  So, validate the ~/.gphoto/settings file and make sure the GUID is correct.  If you used the sony-guid-setter, set it to: ```00:00:00:00:00:00:00:00:ff:ff:08:00:27:f5:16:4f``` <br>
 
 * Run the gphoto2 command again and make sure it returns without errors <br>
+
+* Recommend using a gphoto2 version between 2.5.9 and 2.5.15
 
 * Feel free to log a ticket with your logs for help debugging <br>
