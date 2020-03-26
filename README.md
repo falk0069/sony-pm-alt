@@ -94,12 +94,14 @@ Run in Docker (or manually see below)
 
 2. Run
 
-`$ docker run \
-     --name=sony-pm-alt \
-     --net=host \
-     -e PTP_GUID=ff:ff:52:54:00:b6:fd:a9:ff:ff:52:3c:28:07:a9:3a (edit as needed) \
-     -v /folder/for/incoming/photos:/var/lib/Sony \
-     sony-pm-alt`
+```
+$ docker run \
+    --name=sony-pm-alt \
+    --net=host \
+    -e PTP_GUID=ff:ff:52:54:00:b6:fd:a9:ff:ff:52:3c:28:07:a9:3a (edit as needed) \
+    -v /folder/for/incoming/photos:/var/lib/Sony \
+    sony-pm-alt
+```
 
 
 GETTING GPHOTO2:
