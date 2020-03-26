@@ -20,8 +20,8 @@ CUSTOM_LD_LIBRARY_PATH = "/usr/local/lib" #common path if self-compiled
 
 #Might want to change:
 PHOTO_DIR = "/var/lib/Sony"  #photo/videos will be downloaded to here
-PTP_GUID = "ff:ff:52:54:00:b6:fd:a9:ff:ff:52:3c:28:07:a9:3a" #default value for sony-guid-setter
-DEBUG = False
+PTP_GUID = os.environ['PTP_GUID']
+DEBUG = os.environ['DEBUG']
 #------------------------------------------------------------------
 
 #replace '~' if used
