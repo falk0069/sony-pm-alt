@@ -84,7 +84,7 @@ If you are paranoid running this with sudo you can "chown" /dev/bus/usb/xxx/yyy 
 Run in Docker (or manually see below)
 -----------------------------------------------
 
-0. Set your camera with default GUID (see the above section)
+0. Set your camera with default GUID (if needed - see the above section)
 
 `$ ./sony-guid-setter -g YOUR_CAMERA_VID:PID`
 
@@ -94,7 +94,12 @@ Run in Docker (or manually see below)
 
 2. Run
 
-`$ docker run --name=sony-pm-alt --net=host -v /folder/for/incoming/photos:/var/lib/Sony sony-pm-alt`
+`$ docker run \
+     --name=sony-pm-alt \
+     --net=host \
+     -e PTP_GUID=ff:ff:52:54:00:b6:fd:a9:ff:ff:52:3c:28:07:a9:3a (edit as needed) \
+     -v /folder/for/incoming/photos:/var/lib/Sony \
+     sony-pm-alt`
 
 
 GETTING GPHOTO2:
