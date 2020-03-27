@@ -21,7 +21,7 @@ CUSTOM_LD_LIBRARY_PATH = "/usr/local/lib" #common path if self-compiled
 #Might want to change:
 PHOTO_DIR = "/var/lib/Sony"  #photo/videos will be downloaded to here
 PTP_GUID = os.environ['PTP_GUID']
-DEBUG = os.environ['DEBUG']
+DEBUG = os.environ['DEBUG'].lower() in ['true', '1', 'yes', 'y']
 #------------------------------------------------------------------
 
 #replace '~' if used
