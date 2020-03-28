@@ -1,6 +1,7 @@
 FROM python:2-alpine3.9
 
 EXPOSE 15740/tcp
+EXPOSE 15740/udp
 EXPOSE 1900/udp
 
 ENV PTP_GUID="ff:ff:52:54:00:b6:fd:a9:ff:ff:52:3c:28:07:a9:3a"
