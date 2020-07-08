@@ -196,6 +196,12 @@ USING THE PYTHON SCRIPT - sony-pm-alt.py
 This is just a basic python server that will listen for correct UPNP broadcast.  What you will need to do is edit it and update the top few line with your correct information (e.g. paths and GUID).  Once configured, run it.  It shouldn't do much until to you turn on the Sony camera and try to send to PC.  Hopefully it works.  I also include a simple start script to help auto start it when you PC boots up.  
 
 
+PYTHON3 SUPPORT
+--------------------------------------------------------------------
+Currently Python3 isn't supported.  Eventually it will be, but for now qwwazix has a python3 fork:
+[qwazix](https://github.com/qwazix/sony-pm-alt-python3/tree/python3)
+
+
 TROUBLESHOOTING:
 -----------------------------------------------------------------
 * Make sure you linked the camera.  See LINKING THE CAMERA AND THE PTP-GUID section <br>
