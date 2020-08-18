@@ -124,12 +124,10 @@ Here are three methods for downloading **libgphoto2**: <br>
 2. Or you can do a git clone: <br>
   ```git clone https://github.com/gphoto/libgphoto2.git``` <br>
   (Note you need git installed.  E.g. ```sudo apt-get install git```) <br>
-  <br>
 3. Or grab a stable version at sourceforce: <br>    
   http://sourceforge.net/projects/gphoto/files/libgphoto/ <br>
-
+<br>
 And three methods for downloading **gphoto2**: <br>
-
 1. Bleeding edge at github: <br>
   https://github.com/gphoto/gphoto2/archive/master.zip <br>
 2. Git clone: <br>
