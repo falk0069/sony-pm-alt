@@ -118,9 +118,9 @@ Once you verify it will work for you, try out the sony-pm-alt.py script and see 
 
 DOWNLOAD SOURCE FOR LIBGPHOTO2 and GPHOTO2:
 -------------------------------------------------------------------
-###Here are three methods for downloading **libgphoto2**: <br>
+Here are three methods for downloading **libgphoto2**: <br>
+
 1. The bleeding edge version is located on github: https://github.com/gphoto/libgphoto2/archive/master.zip <br>
-  <br>
 2. Or you can do a git clone: <br>
   ```git clone https://github.com/gphoto/libgphoto2.git``` <br>
   (Note you need git installed.  E.g. ```sudo apt-get install git```) <br>
@@ -128,7 +128,8 @@ DOWNLOAD SOURCE FOR LIBGPHOTO2 and GPHOTO2:
 3. Or grab a stable version at sourceforce: <br>    
   http://sourceforge.net/projects/gphoto/files/libgphoto/ <br>
 
-###And three methods for downloading **gphoto2**: <br>
+And three methods for downloading **gphoto2**: <br>
+
 1. Bleeding edge at github: <br>
   https://github.com/gphoto/gphoto2/archive/master.zip <br>
 2. Git clone: <br>
