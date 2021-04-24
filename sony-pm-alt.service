@@ -21,7 +21,8 @@ WorkingDirectory=/home/falkand/sonytransfer
 User=root
 
 # Default setting for Type=simple.
-ExecStart=/bin/python sony-pm-alt.py -l /var/log/sony-pm-alt.log
+# force python3.  Use the python2 version of the script if you want to go back to python2
+ExecStart=usr/bin/python3 sony-pm-alt.py -l /var/log/sony-pm-alt.log
 
 # Whether systemd will continue over-watch and restart on any halt
 #Restart=always
