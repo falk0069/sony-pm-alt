@@ -199,9 +199,7 @@ This is just a basic python server that will listen for correct UPNP broadcast. 
 
 PYTHON3 SUPPORT
 --------------------------------------------------------------------
-Currently Python3 isn't supported.  Eventually it will be, but for now qwwazix has a python3 fork:
-[qwazix](https://github.com/qwazix/sony-pm-alt-python3/tree/python3)
-
+Finally switched to python3.  The previous python2 version is also still present.  I also updated some start script to explicit call python3 for systems with both versions installed.  Thanks you [qwazix] and [chaseadam] for the conversion.
 
 TROUBLESHOOTING:
 -----------------------------------------------------------------
