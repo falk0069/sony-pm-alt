@@ -38,7 +38,9 @@ case "$1" in
   start)
     echo "Starting sony-pm-alt"
     cd  $SONYUPNPDIR
-    su $USER -c "python sony-pm-alt.py" > /var/log/sony-pm-alt.log 2>&1 &
+    #forcing python3 in case both versions are installed
+    su $USER -c "python3 sony-pm-alt.py" > /var/log/sony-pm-alt.log 2>&1 &
+    #su $USER -c "python sony-pm-alt.py" > /var/log/sony-pm-alt.log 2>&1 &
     ;;
   stop)
     echo "Stopping sony-pm-alt"
