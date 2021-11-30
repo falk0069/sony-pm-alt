@@ -1,4 +1,4 @@
-FROM python:2-alpine3.9
+FROM python:3-alpine3.9
 
 RUN apk add --no-cache gphoto2
 RUN pip install --no-cache requests
