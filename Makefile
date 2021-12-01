@@ -30,7 +30,7 @@ get_guid:
 
 #Needs to be ran manually i.e sudo make set_guid
 set_guid:
-	./$(EXE) -g ${GUID}
+	./$(EXE) -d -g ${GUID}
 
 clean:
 	rm $(EXE)

@@ -1,3 +1,3 @@
 gphoto2=port=ptpip:192.168.50.57
 gphoto2=model=PTP/IP Camera
-ptp2_ip=guid=ff:ff:52:54:00:b6:fd:a9:ff:ff:52:3c:28:07:a9:3a
+ptp2_ip=guid=00:00:00:00:00:00:00:00:ff:ff:08:00:27:f5:16:4f
